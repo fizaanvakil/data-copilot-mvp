@@ -2,3 +2,5 @@ streamlit
 duckdb
 pandas
 matplotlib
+openpyxl      # for .xlsx
+xlrd==1.2.0   # for old .xls
