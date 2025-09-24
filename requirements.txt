@@ -1,0 +1,4 @@
+streamlit==1.38.0
+pandas==2.2.2
+duckdb==1.0.0
+matplotlib==3.9.0
