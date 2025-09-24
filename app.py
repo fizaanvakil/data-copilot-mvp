@@ -39,9 +39,23 @@ except Exception as e:
     st.error(f"Could not read file: {e}")
     st.stop()
 
+# --- CLEANUP PATCH FOR STREAMLIT + PYARROW ---
+# Fix column names (remove line breaks, extra spaces)
+df.columns = [str(c).strip().replace("\n", " ").replace("\r", " ") for c in df.columns]
+
+# Convert object/mixed columns to string (PyArrow bug workaround)
+obj_cols = df.select_dtypes(include=["object"]).columns
+if len(obj_cols) > 0:
+    df[obj_cols] = df[obj_cols].astype(str)
+
+# Replace NaN with None so Arrow/Streamlit can handle them
+df = df.where(pd.notna(df), None)
+# --- END PATCH ---
+
 if df.empty:
     st.warning("Your file seems empty.")
     st.stop()
+
 
 # Clean column names (spaces -> underscores)
 df.columns = [str(c).strip().replace(" ", "_") for c in df.columns]
